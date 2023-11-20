@@ -1,10 +1,8 @@
 exports.handlePsqlErrors = (err,req,res,next) =>{
-
-}
-
-exports.handle404Errors = (err,req,res,next) =>{
-    if(err.status) {
-        res.status(500).send({msg:err.msg})
+    if(err.code === "22PO2" || err.code === "23502"){
+        res.status(400).send({msg: "bad request"})
     }
 }
+
+
 
