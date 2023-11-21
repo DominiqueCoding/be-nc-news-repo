@@ -60,10 +60,10 @@ describe("GET /api",() =>{
 })
 
 describe("GET /api/articles/:article_id",()=>{
-    return request(app).get("/api").expect(200)
-    .then(({body})=>{
+    // return request(app).get("/api").expect(200)
+    // .then(({body})=>{
 
-        expect(body).toMatchObject({
-        })
-    })
+    //     expect(body).toMatchObject({
+    //     })
+    // })
 })
