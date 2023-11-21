@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed")
 const db = require("../db/connection")
 const data = require("../db/data/test-data")
 const fs = require("fs/promises")
+const endpoints = require("../endpoints.json")
 
 beforeAll(() => seed (data))
 afterAll(() => db.end())
@@ -34,26 +35,8 @@ describe("GET /api",() =>{
     
     it("should return object with correct endpoints",()=>{
         return request(app).get("/api").expect(200)
-        .then(async ({body}) =>{
-            expect(body).toEqual(JSON.parse(await fs.readFile('./endpoints.json')))
-        })
-    })
-
-    it("should return endpoints with correct properties",()=>{
-        return request(app).get("/api").expect(200)
         .then(({body}) =>{
-
-            for(key in body){
-                let count = 0
-                if(count){
-                    expect(body[key]).toMatchObject({
-                        description: expect.any(String),
-                        queries: expect.any(Array),
-                        exampleResponse: expect.any(Object)
-                    })
-                }
-                count++
-            }
+            expect(body).toEqual(endpoints)
         })
     })
 
