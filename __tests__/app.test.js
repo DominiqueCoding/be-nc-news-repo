@@ -60,10 +60,21 @@ describe("GET /api",() =>{
 })
 
 describe("GET /api/articles/:article_id",()=>{
-    // return request(app).get("/api").expect(200)
-    // .then(({body})=>{
 
-    //     expect(body).toMatchObject({
-    //     })
-    // })
+    it("should return single article by id with all properties",()=>{
+        return request(app).get("/api/articles/3").expect(200)
+        .then(({body})=>{
+    
+            expect(body).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+            })
+        })
+    })
 })
