@@ -3,6 +3,8 @@ const app = require("../app")
 const seed = require("../db/seeds/seed")
 const db = require("../db/connection")
 const data = require("../db/data/test-data")
+const fs = require("fs/promises")
+const endpoints = require("../endpoints.json")
 
 beforeAll(() => seed (data))
 afterAll(() => db.end())
@@ -27,4 +29,15 @@ describe("GET /api/topics",() => {
             })
         })
     })
+})
+
+describe("GET /api",() =>{
+    
+    it("should return object with correct endpoints",()=>{
+        return request(app).get("/api").expect(200)
+        .then(({body}) =>{
+            expect(body).toEqual(endpoints)
+        })
+    })
+
 })
