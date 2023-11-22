@@ -93,3 +93,53 @@ describe("GET /api/articles/:article_id",()=>{
 
     
 })
+
+describe("GET /api/articles",()=>{
+    it("200:should return array of article object with correct properties",()=>{
+        return request(app).get("/api/articles").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+            
+            expect(articleObjects).toHaveLength(13)
+            articleObjects.forEach((article) =>{
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String),
+                })
+            })
+        })
+    })
+
+    it("200:should return array of article object in decending order",()=>{
+        return request(app).get("/api/articles").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+
+            expect(articleObjects).toBeSortedBy('created_at', {descending: true});
+            
+        })
+    })
+
+    it("200:should return and not have a body property, body property should be replaced by comment count",()=>{
+        return request(app).get("/api/articles").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+
+            articleObjects.forEach((article) =>{
+                expect("body" in article).toEqual(false)
+            })
+            
+            
+            
+        })
+    })
+})
