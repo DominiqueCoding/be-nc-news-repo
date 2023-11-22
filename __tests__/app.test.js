@@ -143,3 +143,43 @@ describe("GET /api/articles",()=>{
         })
     })
 })
+
+describe("GET /api/articles/:article_id/comments",()=>{
+    it("200:should return with array of comments that match article id",()=>{
+        return request(app).get("/api/articles/1/comments").expect(200)
+        .then(({body})=>{
+
+            const commentArr = body
+            
+            commentArr.forEach((article) =>{
+                expect(article).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number)
+                })
+            })
+
+     
+        })
+    })
+
+    it("200:should return with an empty array for articles with no comments",()=>{
+        return request(app).get("/api/articles/2/comments").expect(200)
+        .then(({body})=>{
+            const commentArr = body
+            expect(commentArr).toEqual([])
+        })
+    })
+
+    it("200:the most recent comment is displayed first",()=>{
+        return request(app).get("/api/articles/3/comments").expect(200)
+        .then(({body})=>{
+            const commentArr = body
+            expect(commentArr).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+
+})
