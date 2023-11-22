@@ -65,7 +65,7 @@ describe("GET /api/articles/:article_id",()=>{
         return request(app).get("/api/articles/3").expect(200)
         .then(({body})=>{
     
-            expect(body).toMatchObject({
+            expect(body[0]).toMatchObject({
                 author: expect.any(String),
                 title: expect.any(String),
                 article_id: expect.any(Number),
@@ -77,4 +77,27 @@ describe("GET /api/articles/:article_id",()=>{
             })
         })
     })
+
+    // it.only("should return an error when id is invalid (type mismatch)) ",()=>{
+    //     return request(app).get("/api/articles/invalid_id").expect(404)
+    //     .then(({body})=>{
+    //         expect(body.msg).toEqual("not found")
+    //     })
+    // })
+
+    // it.only("should return an error when id is invalid ) ",()=>{
+    //     return request(app).get("/api/articles/500").expect(404)
+    //     .then(({body})=>{
+    //         expect(body.msg).toEqual("not found")
+    //     })
+    // })
+
+    // it.only("should return an empty array when id is valid but no current item matches ",()=>{
+    //     return request(app).get("/api/articles/16").expect(200)
+    //     .then(({body})=>{
+    //         expect(body).toEqual([])
+    //     }) 
+    // })
+
+    
 })

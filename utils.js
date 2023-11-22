@@ -1,6 +1,6 @@
-const db = require("../db/connection")
+const db = require("./db/connection")
 
-exports.selectArticleById = (id) =>{
+exports.checkIfIdExists = (id)=>{
     return db.query(`
         SELECT * FROM articles where article_id = $1
     `,[id])
