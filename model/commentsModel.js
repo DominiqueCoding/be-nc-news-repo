@@ -27,10 +27,18 @@ exports.selectPostedCommentByArticleId = (username,body,id) =>{
     SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)
     `,[username])
 
-    return checkUsernameExists
-    .then((existsCheck)=>{
+    const checkIdExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM articles WHERE article_id = $1)
+    `,[id])
 
-        if(!existsCheck.rows[0].exists){
+    if(!username || !body){
+        return Promise.reject({code:400,msg:"bad request"})
+    }
+
+    return Promise.all([checkUsernameExists,checkIdExists])
+    .then(([existsCheckUser,existsCheckId])=>{
+
+        if(!existsCheckUser.rows[0].exists || !existsCheckId.rows[0].exists){
             return Promise.reject({code:404,msg:"not found"})
         }else{
             return PostQuery(username,body,id)

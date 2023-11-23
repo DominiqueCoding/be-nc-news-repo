@@ -18,7 +18,7 @@ exports.getPostedCommentByArticleId = (req,res,next) =>{
     const {username,body} = req.body
 
     selectPostedCommentByArticleId(username,body,id).then((comment)=>{
-        res.status(200).send(comment)
+        res.status(201).send(comment)
     })
     .catch(next)
 }

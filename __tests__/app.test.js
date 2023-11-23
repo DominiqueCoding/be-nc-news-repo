@@ -205,13 +205,13 @@ describe("GET /api/articles/:article_id/comments",()=>{
 })
 
 describe("POST /api/articles/:article_id/comments",()=>{
-    it("200:accepts a body with the properties of username and body, responds with the posted comment",()=>{
+    it("201:accepts a body with the properties of username and body, responds with the posted comment",()=>{
         return request(app).post("/api/articles/2/comments")
         .send({
             username: 'icellusedkars',
             body: "this author is really cool"
         })
-        .expect(200)
+        .expect(201)
         .then(({body})=>{
 
             const commentArr = body
@@ -238,6 +238,71 @@ describe("POST /api/articles/:article_id/comments",()=>{
         })
         .expect(404)
     })
+
+    it("201:Ignores any unnecessary properties on the request body.",()=>{
+        return request(app).post("/api/articles/2/comments")
+        .send({
+            unnecessary_property3: "unnecessary value3",
+            username: 'icellusedkars',
+            body: "this author is really cool",
+            unnecessary_property: "unnecessary value",
+            unnecessary_property2: "unnecessary value2"
+        })
+        .expect(201)
+        .then(({body})=>{
+
+            const commentArr = body
+
+            expect(commentArr).toHaveLength(1)
+            commentArr.forEach((comment) =>{
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 2
+                })
+            })     
+        })
+    })
+
+    it("400: returns Bad request error when article_id is invalid",()=>{
+        return request(app).post("/api/articles/non_exist/comments")
+        .send({
+            username: 'icellusedkars',
+            body: "this author is really cool",
+        })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toEqual("bad request")     
+        })
+    })
+
+    it("404: returns not found error when article_id does not exist",()=>{
+        return request(app).post("/api/articles/5000/comments")
+        .send({
+            username: 'icellusedkars',
+            body: "this author is really cool",
+        })
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toEqual("not found")     
+        })
+    })
+
+    it("400: Responds with error object including status and message when body is incomplete ",()=>{
+        return request(app).post("/api/articles/2/comments")
+        .send({
+            username: 'icellusedkars'
+        })
+        .expect(400)
+        .then(({body})=>{
+            expect(body).toEqual({code:400,msg:"bad request"})     
+        })
+    })
+
+
 })
         
     
