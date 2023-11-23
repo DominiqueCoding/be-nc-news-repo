@@ -40,8 +40,6 @@ exports.selectPostedCommentByArticleId = (username,body,id) =>{
 }
 
 PostQuery = (username,body,id) =>{
-
-    console.log("here")
     const currentDate = new Date()
 
     const insertQuery = db.query(`
