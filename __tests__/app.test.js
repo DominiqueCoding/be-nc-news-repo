@@ -167,6 +167,15 @@ describe("GET /api/articles/:article_id/comments",()=>{
         })
     })
 
+    it("200:should return an empty array when the article has no comments",()=>{
+        return request(app).get("/api/articles/2/comments").expect(200)
+        .then(({body})=>{
+
+            const commentArr = body
+            expect(commentArr).toEqual([])
+        })
+    })
+
     it("200:the most recent comment is displayed first",()=>{
         return request(app).get("/api/articles/3/comments").expect(200)
         .then(({body})=>{

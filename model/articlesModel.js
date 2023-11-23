@@ -6,7 +6,6 @@ exports.selectArticleById = (id) =>{
         SELECT * FROM articles where article_id = $1
     `,[id])
     .then(({rows}) =>{
-        
         if(rows.length === 0){
             return Promise.reject({code:404,msg:"not found"})
         }else{
@@ -29,4 +28,6 @@ exports.selectAllArticles = () =>{
        return rows
     })
 }
+
+
 
