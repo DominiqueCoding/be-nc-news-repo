@@ -8,6 +8,11 @@ exports.selectCommentsByArticleId = (id) =>{
         ORDER BY comments.created_at DESC;
     `,[id])
     .then(({rows}) =>{
-       return rows
+        if(rows.length === 0){
+            return Promise.reject({code:404,msg:"not found"})
+        }else{
+            return rows
+        }
+       
     })
 }
