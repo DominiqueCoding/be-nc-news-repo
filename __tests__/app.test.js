@@ -163,6 +163,8 @@ describe("GET /api/articles/:article_id/comments",()=>{
                 })
             })
 
+            //console.log(body)
+
      
         })
     })
@@ -201,3 +203,41 @@ describe("GET /api/articles/:article_id/comments",()=>{
     })
 
 })
+
+describe("POST /api/articles/:article_id/comments",()=>{
+    it("200:accepts a body with the properties of username and body, responds with the posted comment",()=>{
+        return request(app).post("/api/articles/2/comments")
+        .send({
+            username: 'icellusedkars',
+            body: "this author is really cool"
+        })
+        .expect(200)
+        .then(({body})=>{
+
+            const commentArr = body
+
+            expect(commentArr).toHaveLength(1)
+            commentArr.forEach((comment) =>{
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 2
+                })
+            })     
+        })
+    })
+
+    it("404:returns error when username does not exist",()=>{
+        return request(app).post("/api/articles/2/comments")
+        .send({
+            username: 'non-existant-username',
+            body: "this author is really cool"
+        })
+        .expect(404)
+    })
+})
+        
+    

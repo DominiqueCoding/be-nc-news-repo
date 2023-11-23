@@ -3,8 +3,10 @@ const {handlePsqlErrors, handle500Errors, handleCustomErrors } = require('./erro
 const { getTopics } = require('./controller/topicsController')
 const { getApi } = require('./controller/apiController')
 const { getArticleById, getAllArticles } = require('./controller/articlesController')
-const { getCommentsByArticleId } = require('./controller/commentsController')
+const { getCommentsByArticleId, getPostedCommentByArticleId } = require('./controller/commentsController')
 const app = express()
+
+app.use(express.json())
 
 app.get('/api/topics',getTopics)
 
@@ -15,6 +17,8 @@ app.get("/api/articles/:article_id",getArticleById)
 app.get("/api/articles",getAllArticles)
 
 app.get("/api/articles/:article_id/comments",getCommentsByArticleId)
+
+app.post("/api/articles/:article_id/comments",getPostedCommentByArticleId)
 
 app.use(handlePsqlErrors)
 app.use(handleCustomErrors)

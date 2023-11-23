@@ -20,3 +20,38 @@ exports.selectCommentsByArticleId = (id) =>{
         }
     })
 }
+
+exports.selectPostedCommentByArticleId = (username,body,id) =>{
+
+    const checkUsernameExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)
+    `,[username])
+
+    return checkUsernameExists
+    .then((existsCheck)=>{
+
+        if(!existsCheck.rows[0].exists){
+            return Promise.reject({code:404,msg:"not found"})
+        }else{
+            return PostQuery(username,body,id)
+        }
+
+    })
+}
+
+PostQuery = (username,body,id) =>{
+
+    console.log("here")
+    const currentDate = new Date()
+
+    const insertQuery = db.query(`
+    INSERT INTO comments (body,author,article_id,created_at)
+    VALUES ($1,$2,$3,$4)
+    RETURNING *
+    `,[body,username,id,currentDate])
+
+    return insertQuery
+    .then(({rows})=>{
+        return rows
+    })
+}
