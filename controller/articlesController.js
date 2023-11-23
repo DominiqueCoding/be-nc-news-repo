@@ -1,7 +1,4 @@
-const articles = require("../db/data/test-data/articles")
 const { selectArticleById, selectAllArticles } = require("../model/articlesModel")
-const { checkIfIdExists } = require("../utils")
-
 
 exports.getArticleById = (req,res,next) =>{
 

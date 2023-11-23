@@ -143,3 +143,61 @@ describe("GET /api/articles",()=>{
         })
     })
 })
+
+describe("GET /api/articles/:article_id/comments",()=>{
+    it("200:should return with array of comments that match article id, with the same article id properties",()=>{
+        return request(app).get("/api/articles/1/comments").expect(200)
+        .then(({body})=>{
+
+            const commentArr = body
+
+            expect(commentArr).toHaveLength(11)
+            commentArr.forEach((article) =>{
+                expect(article).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 1
+                })
+            })
+
+     
+        })
+    })
+
+    it("200:should return an empty array when the article has no comments",()=>{
+        return request(app).get("/api/articles/2/comments").expect(200)
+        .then(({body})=>{
+
+            const commentArr = body
+            expect(commentArr).toEqual([])
+        })
+    })
+
+    it("200:the most recent comment is displayed first",()=>{
+        return request(app).get("/api/articles/3/comments").expect(200)
+        .then(({body})=>{
+            const commentArr = body
+            expect(commentArr).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+
+    it("404:returns error when valid article_id but does not exist",()=>{
+        
+        return request(app).get("/api/articles/300/comments").expect(404)
+        .then(({body})=>{
+            expect(body.msg).toEqual("not found")
+            
+        })
+    })
+
+    it("400:returns error with invalid article_id",()=>{
+        return request(app).get("/api/articles/invalid_id/comments").expect(400)
+        .then(({body})=>{
+            expect(body.msg).toEqual("bad request")
+        })
+    })
+
+})
