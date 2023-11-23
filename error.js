@@ -8,7 +8,7 @@ exports.handlePsqlErrors = (err,req,res,next) =>{
 
 exports.handleCustomErrors = (err,req,res,next) =>{
     if(err.code !== 500){
-        res.status(err.code).send({msg: err.msg})
+        res.status(err.code).send({code: err.code, msg: err.msg})
     }else{
         next(err)
     }
@@ -17,6 +17,7 @@ exports.handleCustomErrors = (err,req,res,next) =>{
 exports.handle500Errors = (err,req,res,next) =>{
     if(err.code){
         res.status(500).send({msg: "internal server error"})
+        
     }
 }
 

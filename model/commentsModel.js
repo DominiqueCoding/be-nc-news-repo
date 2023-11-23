@@ -20,3 +20,44 @@ exports.selectCommentsByArticleId = (id) =>{
         }
     })
 }
+
+exports.selectPostedCommentByArticleId = (username,body,id) =>{
+
+    const checkUsernameExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)
+    `,[username])
+
+    const checkIdExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM articles WHERE article_id = $1)
+    `,[id])
+
+    if(!username || !body){
+        return Promise.reject({code:400,msg:"bad request"})
+    }
+
+    return Promise.all([checkUsernameExists,checkIdExists])
+    .then(([existsCheckUser,existsCheckId])=>{
+
+        if(!existsCheckUser.rows[0].exists || !existsCheckId.rows[0].exists){
+            return Promise.reject({code:404,msg:"not found"})
+        }else{
+            return PostQuery(username,body,id)
+        }
+
+    })
+}
+
+PostQuery = (username,body,id) =>{
+    const currentDate = new Date()
+
+    const insertQuery = db.query(`
+    INSERT INTO comments (body,author,article_id,created_at)
+    VALUES ($1,$2,$3,$4)
+    RETURNING *
+    `,[body,username,id,currentDate])
+
+    return insertQuery
+    .then(({rows})=>{
+        return rows
+    })
+}
