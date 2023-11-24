@@ -489,4 +489,59 @@ describe("GET /api/users",()=>{
         return request(app).get("/api/userssss").expect(404)
     })
 })
+
+describe.only("GET /api/articles topic query",()=>{
+    it("200:if query is ommitted return all articles",()=>{
+        return request(app).get("/api/articles").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+            
+            expect(articleObjects).toHaveLength(13)
+            articleObjects.forEach((article) =>{
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String),
+                })
+            })
+        })
+    })
+
+    it("200:if query is specified return articles that have the topic",()=>{
+        return request(app).get("/api/articles?topic=cats").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+            
+            expect(articleObjects).toHaveLength(1)
+            articleObjects.forEach((article) =>{
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: "cats",
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String),
+                })
+            })
+
+            
+        })
+    })
+
+    it("400: if query is invalid return error",()=>{
+        return request(app).get("/api/articles?topic=not_valid").expect(400)
+        .then(({body})=>{
+            expect(body).toEqual({ code: 400, msg: 'bad request' })
+        })
+    })
+})
     
