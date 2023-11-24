@@ -435,4 +435,33 @@ describe("PATCH /api/articles/:article_id",()=>{
         })
     })
 })
+
+describe("DELETE /api/comments/:comment_id",()=>{
+    it("204:delete the comment by id, responds with 204 and no content",()=>{
+        return request(app).delete("/api/comments/4")
+        .expect(204)
+        .then(({body})=>{
+            const deletedComment = body
+            expect(deletedComment).toEqual({})
+        })
+    })
+
+    it("400:returns error if id invalid",()=>{
+        return request(app).delete("/api/comments/invalid_id")
+        .expect(400)
+        .then(({body})=>{
+            const deletedComment = body
+            expect(deletedComment.msg).toEqual("bad request")
+        })
+    })
+
+    it("404:returns error when comment does not exist",()=>{
+        return request(app).delete("/api/comments/6000")
+        .expect(404)
+        .then(({body})=>{
+            const deletedComment = body
+            expect(deletedComment.msg).toEqual("not found")
+        })
+    })
+})
     

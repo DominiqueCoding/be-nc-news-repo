@@ -61,3 +61,19 @@ PostQuery = (username,body,id) =>{
         return rows
     })
 }
+
+exports.selectDeletedCommentByCommentId = (id)=>{
+
+    const deleteCommentQuery = db.query(`
+    DELETE FROM comments WHERE comment_id = $1;
+    `,[id])
+
+    return deleteCommentQuery
+    .then((rows)=>{
+        if(rows.rowCount == 0){
+            return Promise.reject({code:404,msg:"not found"})
+        }else{
+            return rows
+        }
+    })
+}
