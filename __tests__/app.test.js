@@ -544,7 +544,7 @@ describe("GET /api/articles topic query",()=>{
         })
     })
 
-    it.only("200: if topic query exists but has no articles, it returns an empty array",()=>{
+    it("200: if topic query exists but has no articles, it returns an empty array",()=>{
         return request(app).get("/api/articles?topic=paper").expect(200)
         .then(({body})=>{
             expect(body).toEqual([])
