@@ -490,7 +490,7 @@ describe("GET /api/users",()=>{
     })
 })
 
-describe.only("GET /api/articles topic query",()=>{
+describe("GET /api/articles topic query",()=>{
     it("200:if query is ommitted return all articles",()=>{
         return request(app).get("/api/articles").expect(200)
         .then(({body})=>{
@@ -537,10 +537,17 @@ describe.only("GET /api/articles topic query",()=>{
         })
     })
 
-    it("400: if query is invalid return error",()=>{
-        return request(app).get("/api/articles?topic=not_valid").expect(400)
+    it("404: if query is invalid return error",()=>{
+        return request(app).get("/api/articles?topic=not_found").expect(404)
         .then(({body})=>{
-            expect(body).toEqual({ code: 400, msg: 'bad request' })
+            expect(body).toEqual({ code: 404, msg: 'not found' })
+        })
+    })
+
+    it.only("200: if topic query exists but has no articles, it returns an empty array",()=>{
+        return request(app).get("/api/articles?topic=paper").expect(200)
+        .then(({body})=>{
+            expect(body).toEqual([])
         })
     })
 })

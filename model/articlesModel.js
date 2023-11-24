@@ -16,33 +16,37 @@ exports.selectArticleById = (id) =>{
 
 exports.selectAllArticles = (topic) =>{
 
-    let selectStringStart = (`
-    SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,articles.article_img_url,
-    COUNT (comments.comment_id)
-    AS comment_count
-    FROM articles
-    LEFT JOIN comments ON articles.article_id = comments.article_id `)
+    return db.query(`
+        SELECT EXISTS(SELECT 1 FROM topics WHERE slug = $1)
+    `,[topic])
+    .then((checkexists)=>{
 
-    let selectStringEnd = (`
-    GROUP BY articles.article_id
-    ORDER BY created_at DESC
-    `)
-
-    let queryValues = []
-
-    const validTopics = ["mitch","cats"]
-
-    if(topic){
-        if(validTopics.includes(topic)){
-            queryValues.push(topic)
-            selectStringStart += `WHERE articles.topic = $1`
-        }else{
-            return Promise.reject({code:400,msg:"bad request"})
+        let selectStringStart = (`
+        SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,articles.article_img_url,
+        COUNT (comments.comment_id)
+        AS comment_count
+        FROM articles
+        LEFT JOIN comments ON articles.article_id = comments.article_id `)
+    
+        let selectStringEnd = (`
+        GROUP BY articles.article_id
+        ORDER BY created_at DESC
+        `)
+    
+        let queryValues = []
+    
+        if(topic){
+            if(checkexists.rows[0].exists){
+                queryValues.push(topic)
+                selectStringStart += `WHERE articles.topic = $1`
+            }else{
+                return Promise.reject({code:404,msg:"not found"})
+            }
+    
         }
-
-    }
-
-    return db.query(selectStringStart+selectStringEnd,queryValues)
+    
+        return db.query(selectStringStart+selectStringEnd,queryValues)
+    })
     .then(({rows}) =>{
        return rows
     })
