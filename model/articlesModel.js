@@ -29,5 +29,53 @@ exports.selectAllArticles = () =>{
     })
 }
 
+exports.selectPatchedArticleById = (voteQuery,id) =>{
+
+    const checkIdExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM articles WHERE article_id = $1)
+    `,[id])
+
+    return checkIdExists
+    .then((existsCheckId)=>{
+
+        if(existsCheckId.rows[0].exists){
+            if(voteQuery >= 0){
+                return incrementVotes(voteQuery,id)
+            }else if(voteQuery < 0){
+                return decrementVotes(voteQuery,id)
+            }else{
+                return Promise.reject({code:400,msg:"bad request"})
+            }
+        }else{
+            return Promise.reject({code:404,msg:"not found"})
+        }
+    })
+}
+
+
+incrementVotes = (voteQuery,id) =>{
+
+    const incrementQuery = db.query(`
+        UPDATE articles SET votes = (votes + $1) WHERE article_id = $2 RETURNING *;
+    `,[voteQuery,id])
+
+    return incrementQuery
+    .then(({rows})=>{
+        return rows[0]
+    })
+}
+
+decrementVotes = (voteQuery,id) =>{
+
+    const decrementQuery = db.query(`
+        UPDATE articles SET votes = (votes - $1) WHERE article_id = $2 RETURNING *;
+    `,[Math.abs(voteQuery),id])
+
+    return decrementQuery
+    .then(({rows})=>{
+        return rows[0]
+    })
+}
+
 
 

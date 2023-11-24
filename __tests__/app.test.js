@@ -162,10 +162,6 @@ describe("GET /api/articles/:article_id/comments",()=>{
                     article_id: 1
                 })
             })
-
-            //console.log(body)
-
-     
         })
     })
 
@@ -302,7 +298,141 @@ describe("POST /api/articles/:article_id/comments",()=>{
         })
     })
 
-
 })
-        
+  
+describe("PATCH /api/articles/:article_id",()=>{
+    it("200:updates the correct article by id",()=>{
+        return request(app).patch("/api/articles/5")
+        .send({
+            inc_votes : 1
+        })
+        .expect(200)
+        .then(({body})=>{
+            const article = body
+
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+            })
+             
+        })
+    })
+
+    it("200:updates the article votes, increments votes by 1",()=>{
+        return request(app).patch("/api/articles/1")
+        .send({
+            inc_votes : 1
+        })
+        .expect(200)
+        .then(({body})=>{
+            const article = body
+
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: 101,
+                article_img_url: expect.any(String),
+            })
+             
+        })
+    })
+
+    it("200:updates the article votes, decrements votes by 100",()=>{
+        return request(app).patch("/api/articles/2")
+        .send({
+            inc_votes : -100
+        })
+        .expect(200)
+        .then(({body})=>{
+            const article = body
+
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: -100,
+                article_img_url: expect.any(String),
+            })
+             
+        })
+    })
+
+    it("200:ignores unneccesary fields",()=>{
+        return request(app).patch("/api/articles/3")
+        .send({
+            not_votes : "100",
+            inc_votes : -1,
+            not_votes : 100
+        })
+        .expect(200)
+        .then(({body})=>{
+            const article = body
+
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: -1,
+                article_img_url: expect.any(String),
+            })
+             
+        })
+    })
+
+    it("400:returns Bad request error when article_id is invalid",()=>{
+        return request(app).patch("/api/articles/2_something")
+        .send({
+            inc_votes : -1,
+        })
+        .expect(400)
+        .then(({body})=>{
+            const article = body
+
+            expect(article.msg).toEqual("bad request")
+             
+        })
+    })
+
+    it("400:responds with status and error code when body is incomplete",()=>{
+        return request(app).patch("/api/articles/2")
+        .send({
+
+        })
+        .expect(400)
+        .then(({body})=>{
+            const article = body
+
+            expect(article).toEqual({code:400,msg:"bad request"})
+             
+        })
+    })
+    
+    it("404:returns not found error when article_id does not exist",()=>{
+        return request(app).patch("/api/articles/200000")
+        .send({
+            inc_votes : -1
+        })
+        .expect(404)
+        .then(({body})=>{
+            const article = body
+            expect(article.msg).toEqual("not found")
+        })
+    })
+})
     
