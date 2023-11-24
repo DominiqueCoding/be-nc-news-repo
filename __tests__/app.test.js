@@ -484,5 +484,9 @@ describe("GET /api/users",()=>{
         })
 
     })
+
+    it("404: returns error with invalid path",()=>{
+        return request(app).get("/api/userssss").expect(404)
+    })
 })
     
