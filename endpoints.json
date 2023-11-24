@@ -101,5 +101,17 @@
         } 
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id":{
+    "description": "deletes a comment by comment id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "code": 204,
+          "msg": "no content"
+        } 
+      ]
+    }
   }  
 }

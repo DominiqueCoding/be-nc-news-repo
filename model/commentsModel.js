@@ -61,3 +61,24 @@ PostQuery = (username,body,id) =>{
         return rows
     })
 }
+
+exports.selectDeletedCommentByCommentId = (id)=>{
+
+    const checkIdExists = db.query(`
+    SELECT EXISTS(SELECT 1 FROM comments WHERE comment_id = $1)
+    `,[id])
+
+    const deleteCommentQuery = db.query(`
+    DELETE FROM comments WHERE comment_id = $1 RETURNING *;
+    `,[id])
+
+    return Promise.all([checkIdExists,deleteCommentQuery])
+    .then(([checkIdExists,rows])=>{
+
+        if(!checkIdExists.rows[0].exists){
+            return Promise.reject({code:404,msg:"not found"})
+        }else{
+            return rows
+        }
+    })
+}
