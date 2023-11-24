@@ -61,14 +61,11 @@ incrementVotes = (voteQuery,id) =>{
 
     return incrementQuery
     .then(({rows})=>{
-        console.log(rows[0].votes,"votes")
         return rows[0]
     })
 }
 
 decrementVotes = (voteQuery,id) =>{
-
-    console.log(Math.abs(voteQuery),"<--abs",voteQuery,"<--not abs")
 
     const decrementQuery = db.query(`
         UPDATE articles SET votes = (votes - $1) WHERE article_id = $2 RETURNING *;
@@ -76,7 +73,6 @@ decrementVotes = (voteQuery,id) =>{
 
     return decrementQuery
     .then(({rows})=>{
-        console.log(rows[0].votes,"votes")
         return rows[0]
     })
 }
