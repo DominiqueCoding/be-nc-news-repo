@@ -26,8 +26,8 @@ exports.getPostedCommentByArticleId = (req,res,next) =>{
 exports.getDeletedCommentByCommentId = (req,res,next) =>{
     const id = req.params.comment_id
 
-    selectDeletedCommentByCommentId(id).then((deletedComment)=>{
-        res.status(204).send(deletedComment)
+    selectDeletedCommentByCommentId(id).then(()=>{
+        res.sendStatus(204)
     })
     .catch(next)
 }
