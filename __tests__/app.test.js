@@ -464,4 +464,25 @@ describe("DELETE /api/comments/:comment_id",()=>{
         })
     })
 })
+
+describe("GET /api/users",()=>{
+
+    it("200:get an array of all users with the correct properties",()=>{
+        return request(app).get("/api/users").expect(200)
+        .then(({body})=>{
+
+            const userArr = body
+
+            expect(userArr).toHaveLength(4)
+            userArr.forEach((user) =>{
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+        })
+
+    })
+})
     
