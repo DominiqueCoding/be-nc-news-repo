@@ -29,7 +29,7 @@ exports.selectAllArticles = () =>{
     })
 }
 
-exports.SelectPatchedArticleById = (voteQuery,id) =>{
+exports.selectPatchedArticleById = (voteQuery,id) =>{
 
     const checkIdExists = db.query(`
     SELECT EXISTS(SELECT 1 FROM articles WHERE article_id = $1)

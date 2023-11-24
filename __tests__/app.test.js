@@ -398,9 +398,7 @@ describe("PATCH /api/articles/:article_id",()=>{
     it("400:returns Bad request error when article_id is invalid",()=>{
         return request(app).patch("/api/articles/2_something")
         .send({
-            not_votes : "100",
             inc_votes : -1,
-            not_votes : 100
         })
         .expect(400)
         .then(({body})=>{
