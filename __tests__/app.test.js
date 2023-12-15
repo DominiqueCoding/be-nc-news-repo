@@ -551,4 +551,59 @@ describe("GET /api/articles topic query",()=>{
         })
     })
 })
-    
+
+describe("GET /api/articles sort and order query",()=>{
+    it("200:if query is ommitted return all articles",()=>{
+        return request(app).get("/api/articles").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+            
+            expect(articleObjects).toHaveLength(13)
+            articleObjects.forEach((article) =>{
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String),
+                })
+            })
+        })
+    })
+
+    it("200:can sort articles by comment_count desc",()=>{
+        return request(app).get("/api/articles?sort_by=created_at").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+            
+            expect(articleObjects).toBeSortedBy('created_at', {descending: true});
+
+        })
+    })
+
+    it("200:can sort articles by date asc",()=>{
+        return request(app).get("/api/articles?sort_by=created_at&&order_by=ASC").expect(200)
+        .then(({body})=>{
+
+            const articleObjects = body
+
+            expect(articleObjects).toBeSortedBy('created_at', {descending: false});
+
+        })
+    })
+
+    it("400:returns bad request error for invalid sort_by",()=>{
+        return request(app).get("/api/articles?sort_by=invalid").expect(400)
+    })
+
+    it("200:returns articles by default desc when order by is invalid",()=>{
+        return request(app).get("/api/articles?order_by=invalid").expect(200)
+    })
+
+})
+

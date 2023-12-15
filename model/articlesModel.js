@@ -14,8 +14,7 @@ exports.selectArticleById = (id) =>{
     })
 }
 
-exports.selectAllArticles = (topic) =>{
-
+exports.selectAllArticles = (topic,sort_by,order_by = "DESC") =>{
     return db.query(`
         SELECT EXISTS(SELECT 1 FROM topics WHERE slug = $1)
     `,[topic])
@@ -38,16 +37,34 @@ exports.selectAllArticles = (topic) =>{
         if(topic){
             if(checkexists.rows[0].exists){
                 queryValues.push(topic)
+
                 selectStringStart += `WHERE articles.topic = $1`
             }else{
                 return Promise.reject({code:404,msg:"not found"})
             }
     
         }
-    
+
+        if(sort_by){
+            const sortQueries = ["created_at","votes","comment_count"]
+            const orderQueries = ["ASC","DESC"]
+            if(sortQueries.includes(sort_by) && orderQueries.includes(order_by)){
+
+                selectStringEnd = (`
+                GROUP BY articles.article_id
+                ORDER BY ${sort_by} ${order_by}
+                `)
+
+            }
+            else{
+                return Promise.reject({code:400,msg:"bad request"})
+            }
+        }
+
         return db.query(selectStringStart+selectStringEnd,queryValues)
     })
     .then(({rows}) =>{
+       
        return rows
     })
 }
