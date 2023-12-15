@@ -14,7 +14,7 @@ exports.selectArticleById = (id) =>{
     })
 }
 
-exports.selectAllArticles = (topic,sort_by,order_by = "DESC") =>{
+exports.selectAllArticles = (topic,sort_by,order = "DESC") =>{
     return db.query(`
         SELECT EXISTS(SELECT 1 FROM topics WHERE slug = $1)
     `,[topic])
@@ -48,11 +48,11 @@ exports.selectAllArticles = (topic,sort_by,order_by = "DESC") =>{
         if(sort_by){
             const sortQueries = ["created_at","votes","comment_count"]
             const orderQueries = ["ASC","DESC"]
-            if(sortQueries.includes(sort_by) && orderQueries.includes(order_by)){
+            if(sortQueries.includes(sort_by) && orderQueries.includes(order)){
 
                 selectStringEnd = (`
                 GROUP BY articles.article_id
-                ORDER BY ${sort_by} ${order_by}
+                ORDER BY ${sort_by} ${order}
                 `)
 
             }

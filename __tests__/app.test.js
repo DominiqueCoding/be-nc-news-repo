@@ -587,7 +587,7 @@ describe("GET /api/articles sort and order query",()=>{
     })
 
     it("200:can sort articles by date asc",()=>{
-        return request(app).get("/api/articles?sort_by=created_at&&order_by=ASC").expect(200)
+        return request(app).get("/api/articles?sort_by=created_at&&order=ASC").expect(200)
         .then(({body})=>{
 
             const articleObjects = body
@@ -602,7 +602,7 @@ describe("GET /api/articles sort and order query",()=>{
     })
 
     it("200:returns articles by default desc when order by is invalid",()=>{
-        return request(app).get("/api/articles?order_by=invalid").expect(200)
+        return request(app).get("/api/articles?order=invalid").expect(200)
     })
 
 })
