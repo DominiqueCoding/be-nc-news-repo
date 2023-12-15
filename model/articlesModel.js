@@ -14,7 +14,7 @@ exports.selectArticleById = (id) =>{
     })
 }
 
-exports.selectAllArticles = (topic,sort_by,order = "DESC") =>{
+exports.selectAllArticles = (topic,sort_by,order = "desc") =>{
     return db.query(`
         SELECT EXISTS(SELECT 1 FROM topics WHERE slug = $1)
     `,[topic])
@@ -47,7 +47,7 @@ exports.selectAllArticles = (topic,sort_by,order = "DESC") =>{
 
         if(sort_by){
             const sortQueries = ["created_at","votes","comment_count"]
-            const orderQueries = ["ASC","DESC"]
+            const orderQueries = ["asc","desc"]
             if(sortQueries.includes(sort_by) && orderQueries.includes(order)){
 
                 selectStringEnd = (`

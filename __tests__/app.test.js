@@ -587,7 +587,7 @@ describe("GET /api/articles sort and order query",()=>{
     })
 
     it("200:can sort articles by date asc",()=>{
-        return request(app).get("/api/articles?sort_by=created_at&&order=ASC").expect(200)
+        return request(app).get("/api/articles?sort_by=created_at&&order=asc").expect(200)
         .then(({body})=>{
 
             const articleObjects = body
